@@ -15,7 +15,7 @@ class GigController extends Controller
     public function index()
     {
         return view('gigs.index', [
-            'gigs' => Gig::latest()->get(),
+            'gigs' => Gig::orderBy('date', 'asc')->get(),
         ]);
     }
 

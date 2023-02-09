@@ -1,0 +1,640 @@
+@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;700&family=Roboto+Condensed:wght@400;700&family=Roboto:wght@400;700&family=Source+Sans+Pro:wght@400;600;700&display=swap");
+
+@font-face {
+    font-family: "icons";
+    src: url("../fonts/fontello.ttf");
+}
+
+@font-face {
+    font-family: "BPDots";
+    src: url("../fonts/BPdots.otf");
+}
+
+@mixin flex($justify) {
+    display: flex;
+    justify-content: $justify;
+}
+
+@mixin vertical-center {
+    align-items: center;
+}
+
+@mixin slide {
+    width: 150px;
+    height: 150px;
+    position: absolute;
+    @include flex(center);
+    @include vertical-center();
+    transition: all 0.5s ease-in-out;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 1;
+
+    .slide-links {
+        font-family: "icons";
+        font-size: 2rem;
+        @include flex(space-evenly);
+        @include vertical-center();
+    }
+
+    &:hover img {
+        opacity: 0.2;
+    }
+
+    &:hover .slide-data {
+        opacity: 1;
+    }
+
+    img {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 5px;
+    }
+
+    .slide-data {
+        @include flex(center);
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+        z-index: 20;
+        opacity: 0;
+        font-size: 0.8rem;
+    }
+}
+
+* {
+    scroll-behavior: smooth;
+}
+
+$text: #c9c9c9;
+$background: #1b1b1b;
+$white: #ffffff;
+
+body {
+    height: 100vh;
+    color: $text;
+    background-color: $background;
+    font-family: "Raleway", sans-serif;
+}
+
+hr {
+    width: 100%;
+}
+
+a:link,
+a:visited {
+    color: $text;
+    text-decoration: none;
+}
+
+.page-link {
+    display: block;
+    width: fit-content;
+    margin: 1rem auto;
+    font-weight: 600;
+    border: 1px solid $text;
+    padding: 0.5rem;
+    border-radius: 5px;
+
+    &:hover {
+        color: $background;
+        background-color: $text
+    }
+}
+
+// Settings for all social icons
+
+.socials {
+    @include flex(space-evenly);
+    margin: 0 auto;
+    width: 60%;
+    font-size: 2.5rem;
+    font-family: "icons";
+
+    a:hover {
+        transform: scale(1.1);
+        color: $white;
+    }
+}
+
+// Header and navigation section
+
+header {
+    width: 100%;
+    @include flex(center);
+
+    .navigation {
+        position: fixed;
+        top: 0;
+        z-index: 999;
+        width: 80%;
+        height: 150px;
+
+        color: $text;
+        background: linear-gradient(
+            0deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(27, 27, 27, 1) 30%
+        );
+        text-transform: uppercase;
+        font-size: 1.5rem;
+        @include flex(center);
+        @include vertical-center;
+
+        ul {
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        li {
+            @include flex(center);
+            width: 20%;
+            height: 100%;
+        }
+
+        #navigation-collapse-section {
+            position: relative;
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+            user-select: none;
+            border-radius: 5px;
+
+            &:hover {
+                cursor: pointer;
+                background-color: $text;
+                color: $background;
+            }
+
+            #navigation-collapse-links {
+                display: none;
+                top: 1.5rem;
+                flex-direction: column;
+                position: absolute;
+
+                li {
+                    display: flex;
+                    align-items: center;
+                    width: 100%;
+                    margin-top: 1rem;
+                    // padding-top: 0.5rem;
+
+                    &:last-child {
+                        margin-bottom: 1rem;
+                    }
+                }
+
+                &.collapsed {
+                    display: flex;
+                }
+            }
+        }
+
+        a {
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            border-radius: 5px;
+
+            &:hover {
+                background-color: $text;
+                color: $background;
+            }
+        }
+    }
+}
+
+// Hero section with logo
+
+.hero {
+    @include flex(center);
+    background-image: linear-gradient(
+        -45deg,
+        #f0ff1b,
+        #ff3985,
+        #23a6d5,
+        #32ff88
+    );
+    background-size: 400% 400%;
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -moz-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradient 30s ease infinite;
+    min-height: 100vh;
+    font-family: "BPDots";
+
+    align-items: center;
+    font-size: 3.5vw;
+    padding: 0 1rem;
+
+    h1 {
+        padding: 0 1rem;
+    }
+
+    @keyframes gradient {
+        10% {
+            background-position: 0% 0%;
+        }
+
+        20% {
+            background-position: 0% 50%;
+        }
+
+        30% {
+            background-position: 50% 50%;
+        }
+
+        40% {
+            background-position: 50% 100%;
+        }
+
+        50% {
+            background-position: 100% 100%;
+        }
+
+        60% {
+            background-position: 50% 100%;
+        }
+
+        70% {
+            background-position: 50% 50%;
+        }
+
+        80% {
+            background-position: 0% 50%;
+        }
+
+        90% {
+            background-position: 0% 0%;
+        }
+        100% {
+            background-position: 0% 0%;
+        }
+    }
+}
+
+// General settings for all sections on website
+
+.section {
+    @include flex(center);
+    @include vertical-center();
+    padding: 2rem 0;
+    margin: 0 auto;
+    width: 80%;
+    flex-direction: column;
+    text-align: center;
+
+    .anchor-span {
+        position: relative;
+        top: -100px;
+    }
+
+    &.top-margin-section {
+        margin-top: 150px;
+    }
+
+    h2 {
+        // margin-top: 8rem;
+        font-size: 2rem;
+    }
+
+    p {
+        font-size: 20px;
+    }
+
+    .contacts {
+        width: 100%;
+    }
+}
+
+// Image slider section
+
+.discography-lists {
+    width: 100%;
+
+    .slider {
+        height: 150px;
+        width: 100%;
+        @include flex(center);
+        @include vertical-center();
+        position: relative;
+
+        .slider-btns {
+            width: 100%;
+            @include flex(space-between);
+
+            .slider-btn {
+                background-color: transparent;
+                border: none;
+                color: $text;
+                font-size: 4rem;
+
+                &:hover {
+                    cursor: pointer;
+                    color: $white;
+                }
+            }
+        }
+
+        .slides {
+            position: absolute;
+            @include flex(center);
+            @include vertical-center();
+            width: 200px;
+            height: 100%;
+
+            .slide {
+                @include slide;
+                opacity: 0;
+
+
+                &.prev-slide {
+                    transform: translateX(-250px);
+                    z-index: 8;
+                    opacity: 1;
+                }
+
+                &.next-slide {
+                    transform: translateX(250px);
+                    z-index: 8;
+                    opacity: 1;
+                }
+
+                &.current-slide {
+                    z-index: 10;
+                    opacity: 1;
+                }
+
+                &.translated-slide-right {
+                    z-index: 10;
+                    opacity: 1;
+                    transform: translateX(150px);
+                }
+
+                &.translated-slide-left {
+                    z-index: 10;
+                    opacity: 1;
+                    transform: translateX(-150px);
+                }
+            }
+        }
+    }
+    // background-color: #23a6d5;
+}
+
+// Homepage gigs section
+
+.gigs, .album {
+    table {
+        margin: 0 auto;
+        border: none;
+        border-collapse: collapse;
+    }
+
+    tbody tr {
+        border-bottom: 1px solid $text;
+
+        &.past {
+            opacity: 0.6;
+        }
+    }
+
+    th,
+    td {
+
+        text-align: center;
+        padding: 1rem 2rem;
+    }
+}
+
+// Settings for sigle album's page
+.album {
+    padding: 0 0 5rem 0;
+    img {
+        max-width: 300px;
+        max-height: 300px;
+        object-fit: cover;
+    }
+
+    .albums-link {
+        font-family: 'icons';
+    }
+}
+
+// Settings for pages with all albums and songs
+
+.songs-albums-page {
+    @include flex(center);
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 2rem;
+
+
+    .slide {
+        @include slide();
+        width: 200px;
+        height: 200px;
+        position: relative;
+    }
+}
+
+// Settings for gallery 
+
+.photo-list {
+    margin: 0 auto;
+    width: 80%;
+    @include flex(center);
+    @include vertical-center();
+    flex-wrap: wrap;
+    gap: 1rem;
+
+    .photo-container {
+        max-width: 300px;
+        height: 200px;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+    }
+
+}
+
+#gallery-select {
+    background-color: $text;
+    color: $background;
+    border-radius: 5px;
+    font-size: 1.25rem;
+
+    option {
+        font-size: 0.8rem;
+        width: fit-content;
+    }
+}
+
+// Login page section
+.login-page {
+    width: 100%;
+    height: 100%;
+    @include flex(center);
+    flex-direction: column;
+    @include vertical-center();
+
+    .login-form {
+        @include flex(center);
+        @include vertical-center();
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+    }
+}
+
+// Dashboard
+.dashboard {
+    margin-top: 2rem;
+    @include flex(center);
+    @include vertical-center();
+    flex-direction: column;
+
+    .page-link {
+        background-color: #c9c9c9;
+        color: $background;
+        padding: 0.5rem;
+    }
+
+    .flash-message {
+        position: absolute;
+        top: 20px;
+        width: 300px;
+        height: 100px;
+        color: $background;
+        background-color: #32ff88;
+        font-size: 18px;
+        @include flex(center);
+        @include vertical-center();
+
+        &.errors {
+            font-size: 12px;
+            background-color: red;
+        }
+    }
+
+    .description-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        textarea {
+            width: 400px;
+            height: 400px;
+            font-size: 18px;
+        }
+    }
+
+    .photo-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        .dashboard-input {
+            @include flex(space-between);
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+    }
+
+    .collaplse-btn {
+        width: 200px;
+        margin-bottom: 2rem;
+    }
+
+    .dashboard-list {
+        display: none;
+
+        &.collapsed {
+            display: block;
+        }
+    }
+    .dashboard-item {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+
+        .dashboard-form {
+            display: flex;
+            @include vertical-center();
+            height: 100%;
+            gap: 1rem;
+
+            .dashboard-input {
+                display: flex;
+                flex-direction: column;
+            }
+        }
+    }
+    .dashboard-form-btn {
+        @include flex(center);
+        @include vertical-center();
+        font-family: "icons";
+        border: transparent;
+        background-color: transparent;
+        color: $text;
+        font-size: 2rem;
+        border-radius: 10px;
+
+        &:hover {
+            cursor: pointer;
+            background-color: $text;
+            color: $background;
+        }
+    }
+
+    #songs-form {
+        flex-direction: column;
+    }
+
+    .photo-container {
+        margin: 0 auto;
+        width: 100%;
+        @include flex(center);
+        row-gap: 1rem;
+        column-gap: 1rem;
+        flex-wrap: wrap;
+
+        .dashboard-photo {
+            .photo-controls {
+                margin: 1rem auto;
+                display: flex;
+                gap: 0.5rem;
+
+                button {
+                    font-family: "icons";
+                    font-size: 1rem;
+
+                    &:hover {
+                        cursor: pointer;
+                    }
+                }
+            }
+
+            img {
+                width: 200px;
+                height: 200px;
+                object-fit: contain;
+            }
+        }
+    }
+}

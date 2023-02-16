@@ -22,4 +22,9 @@ class Song extends Model
     {
         return $this->belongsTo(Album::class, 'album_id');
     }
+
+    public function photo()
+    {
+        return $this->morphOne(Photo::class, 'photoable');
+    }
 }

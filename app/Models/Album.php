@@ -20,4 +20,9 @@ class Album extends Model
     {
         return $this->hasMany(Song::class, 'album_id');
     }
+
+    public function photo()
+    {
+        return $this->morphOne(Photo::class, 'photoable');
+    }
 }

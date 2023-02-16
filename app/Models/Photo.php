@@ -15,9 +15,8 @@ class Photo extends Model
         'featured',
     ];
 
-
-    public function gig () {
-        return $this->belongsTo(Gig::class, 'photo_id');
+    public function photoable() {
+        return $this->morphTo();
     }
     
     public function scopeFilter($query, array $filters)

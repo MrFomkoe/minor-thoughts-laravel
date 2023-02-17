@@ -16,7 +16,8 @@ return new class extends Migration
         Schema::create('photos', function (Blueprint $table) {
             $table->id();
             $table->string('url');
-            $table->foreignId('gig_id')->nullable()->constrained()->onDelete('cascade');;
+            $table->integer('photoable_id')->nullable();
+            $table->string('photoable_type')->nullable();
             $table->boolean('featured')->default(false);
             $table->timestamps();
         });

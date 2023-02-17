@@ -1,9 +1,23 @@
 <div class="dashboard-item">
 
     {{-- Form for song's contents so those could be updated --}}
-    <form class="dashboard-form" action="{{route('albums.update', $album)}}" method="POST">
+    <form class="dashboard-form" action="{{route('albums.update', $album)}}" method="POST"
+        enctype="multipart/form-data">
         @csrf
         @method('PATCH')
+
+        <div class="dashboard-input">
+            @if ($album->photo)
+            <div class="dashboard-image">
+                <img src="{{asset('/storage/' . $album->photo->url)}}" alt="">
+            </div>
+            @endif
+        </div>
+
+        <div class="dashboard-input">
+            <label for="">Photo</label>
+            <input type="file" name="photo" id="">
+        </div>
 
         <div class="dashboard-input">
             <label for="">Album name</label>

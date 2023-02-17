@@ -17,11 +17,8 @@ class Gig extends Model
         'link',
     ];
 
-    public function photos () {
-        return $this->hasMany(Photo::class, 'photo_id');
-    }
 
-    public function photo()
+    public function photos()
     {
         return $this->morphMany(Photo::class, 'photoable');
     }

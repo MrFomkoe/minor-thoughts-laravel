@@ -13,7 +13,6 @@ class Album extends Model
         'name',
         'spotify',
         'apple',
-        'photo',
     ];
 
     public function songs()

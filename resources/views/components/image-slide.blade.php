@@ -1,10 +1,11 @@
 @props(['unit'])
 
-<div class="slide" >
+<div class="slide">
     @if ($unit instanceof \App\Models\Song)
-    <img src="{{$unit->photo ? asset('/storage/' . $unit->photo) : asset('/storage/' . $unit->album()->first()->photo)}}" alt="">
+    <img src="{{$unit->photo ? asset('/storage/' . $unit->photo->url) : asset('/storage/' . $unit->album()->first()->photo->url)}}"
+        alt="">
     @else
-    <img src="{{asset('/storage/' . $unit->photo)}}" alt="">
+    <img src="{{asset('/storage/' . $unit->photo->url)}}" alt="">
     @endif
 
     <div class="slide-data">

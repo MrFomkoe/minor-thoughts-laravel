@@ -19,7 +19,6 @@ return new class extends Migration
             $table->foreignId('album_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('spotify');
             $table->string('apple');
-            $table->string('photo')->nullable();
             $table->boolean('featured');
             $table->timestamps();
         });

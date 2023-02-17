@@ -14,7 +14,6 @@ class Song extends Model
         'album_id',
         'spotify',
         'apple',
-        'photo',
         'featured',
     ];
 
@@ -27,4 +26,8 @@ class Song extends Model
     {
         return $this->morphOne(Photo::class, 'photoable');
     }
+
+    // public function getPhotoAttribute () {
+    //     return $this->photo->url;
+    // }
 }

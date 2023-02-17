@@ -44,22 +44,30 @@ class PhotoController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'gig_id' => 'nullable',
-            'image' => 'required',
-            'image.*' => 'image|mimes:jpeg,png,jpg,gif,svg'
+            'gig_id' => ['nullable'],
+            'image' => ['required'],
+            'image.*' => ['image', 'mimes:jpeg,png,jpg,gif,svg', 'max:5012']
         ]);
 
-        $gig_id = $request['gig_id'];
 
+
+        $gig = Gig::find($request['gig_id']);
+
+        // dd($gig);
         // dd($request->file('image'));
 
         foreach ($request->file('image') as $image) {
             $path = $image->store('photos', 'public');
 
-            Photo::create([
-                'gig_id' => $gig_id,
-                'url' => $path,
-            ]);
+            if ($gig) {
+                $gig->photos()->create([
+                    'url' => $path,
+                ]);
+            } else {
+                Photo::create([
+                    'url' => $path,
+                ]);
+            }
         }
 
         return redirect(route('photos.manage'))->with('message', 'Photos uploaded');
@@ -126,11 +134,14 @@ class PhotoController extends Controller
      */
     public function manage()
     {
+        $filter = request(['gig']);
 
         return view('dashboard.photos', [
             // Filtering photos by selected gig
-            'photos' => Photo::filter(request(['gig_id']))->latest()->simplePaginate(10),
+            
+            'photos' => Photo::filter($filter)->latest()->simplePaginate(5),
             'gigs' => Gig::all(),
+            'filter' => $filter,
         ]);
     }
 }

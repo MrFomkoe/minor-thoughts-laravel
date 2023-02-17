@@ -99,6 +99,8 @@ class GigController extends Controller
      */
     public function destroy(Gig $gig)
     {
+        $gig->photos()->delete();
+
         $gig->delete();
         return back()->with('message', 'Gig deleted');
     }

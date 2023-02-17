@@ -553,6 +553,7 @@ header {
             @include flex(space-between);
             flex-direction: column;
             gap: 0.5rem;
+           
         }
     }
 
@@ -572,16 +573,32 @@ header {
         display: flex;
         gap: 0.5rem;
         margin-bottom: 1rem;
+        @include vertical-center();
+        justify-content: flex-end;
+        border-bottom: solid 2px $text;
+        padding: 0.5rem;
 
         .dashboard-form {
             display: flex;
             @include vertical-center();
             height: 100%;
             gap: 1rem;
+            
 
             .dashboard-input {
                 display: flex;
                 flex-direction: column;
+
+                .dashboard-image {
+                    width: 150px;
+                    height: 150px;
+
+                    img {
+                        height: 100%;
+                        width: 100%;
+                        object-fit: contain;
+                    }
+                }
             }
         }
     }

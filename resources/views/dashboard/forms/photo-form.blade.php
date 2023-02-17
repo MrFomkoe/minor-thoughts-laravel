@@ -19,7 +19,9 @@
                     <select name="gig_id">
                         <option value=""> No gig related </option>
                         @foreach ($gigs as $gig)
+                        @if ($gig->upcoming == false)
                         <option value="{{$gig->id}}">{{$gig->venue}} / {{$gig->date}}</option>
+                        @endif
                         @endforeach
                     </select>
                 </div>

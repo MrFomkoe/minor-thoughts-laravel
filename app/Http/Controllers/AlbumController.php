@@ -44,16 +44,23 @@ class AlbumController extends Controller
             'name' => ['required'],
             'spotify' => ['required'],
             'apple' => ['required'],
-            'photo' => ['nullable', 'image'],
         ]);
 
-        // Saving photo if it has been added to record
-        if (isset($formFields['photo'])) {
-            $formFields['photo'] = $formFields['photo']->store('photos/albums', 'public');
-        }
-
         // Creating new instance of album
-        Album::create($formFields);
+        $album = Album::create($formFields);
+
+        // Checking if photo was uploaded
+        if ($request->file('photo')) {
+            // Validating photo
+            request()->validate([
+                'photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:5120'],
+            ]);
+
+            // Creating new instance of Photo and saving to database
+            $album->photo()->create([
+                'url' => $request->file('photo')->store('photos/albums', 'public'),
+            ]);
+        }
 
         // Redirecting back to dashboard
         return redirect(route('dashboard'))->with('message', 'Album created');
@@ -71,7 +78,7 @@ class AlbumController extends Controller
         $songs = $album->songs()->get();
 
         // Returning view
-        return view('albums.show' , [
+        return view('albums.show', [
             'album' => $album,
             'songs' => $songs,
         ]);
@@ -95,6 +102,32 @@ class AlbumController extends Controller
 
         // Updating and redirecting back
         $album->update($formFields);
+
+        // Checking if new photo was uploaded 
+        if ($request->file('photo')) {
+            // Validating photo
+            request()->validate([
+                'photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:5120'],
+            ]);
+
+            // Check if photo was already assigned to song and rewrite photo
+            if ($album->photo) {
+                if (Storage::disk('public')->exists($album->photo->url)) {
+                    Storage::disk('public')->delete($album->photo->url);
+                    
+                }
+                $album->photo()->update([
+                    'url' => $request->file('photo')->store('photos/albums', 'public'),
+                ]);
+            }
+            // If song didn't have photo assigned to it, create new Photo instance
+            else {
+                $album->photo()->create([
+                    'url' => $request->file('photo')->store('photos/albums', 'public'),
+                ]);
+            }
+        }
+
         return back()->with('message', 'Album updated');
     }
 
@@ -108,10 +141,12 @@ class AlbumController extends Controller
     {
         // Checking if album has photo file and deleting if yes
         if (isset($album->photo)) {
-            if(Storage::disk('public')->exists($album->photo)) {
-                Storage::disk('public')->delete($album->photo);
+            if (Storage::disk('public')->exists($album->photo->url)) {
+                Storage::disk('public')->delete($album->photo->url);
             }
         }
+        // Deleting related photo from database
+        $album->photo()->delete();
         // Deleting database record
         $album->delete();
         // Redirecting back

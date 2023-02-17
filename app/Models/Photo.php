@@ -11,25 +11,34 @@ class Photo extends Model
 
     protected $fillable = [
         'url',
-        'gig_id',
         'featured',
+        'photoable_type'
     ];
 
-    public function photoable() {
+    public function photoable()
+    {
         return $this->morphTo();
     }
-    
+
     public function scopeFilter($query, array $filters)
     {
         // Filtering depending on the query sent
-
-        // This part checks if the query contains gig id
-        if (isset($filters['gig_id']) && $filters['gig_id'] !== 'no_gig') {
-            $query->where('gig_id', request('gig_id'));
-
-        // This part is to show photos that are not related to any gigs
-        } elseif (isset($filters['gig_id']) && $filters['gig_id'] == 'no_gig') {
-            $query->where('gig_id', null);
+        if (isset($filters['gig'])) {
+            $filter = $filters['gig'];
+            if ($filter == 'no-gig') {
+                $query->whereNull('photoable_type');
+            } else {
+                $query->where([
+                    ['photoable_type', 'App\Models\Gig'],
+                    ['photoable_id', $filter]
+                ]);
+            }
+        } else {
+            $query->where([
+                ['photoable_type', null]
+            ])->orWhere([
+                ['photoable_type', 'App\Models\Gig']
+            ]);
         }
     }
 }

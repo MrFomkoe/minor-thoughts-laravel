@@ -13,7 +13,7 @@ class UserController extends Controller
 
     public function authenticate(Request $request) {
 
-        // dd(bcrypt(12345));
+        // dd(bcrypt('qwerty12345'));
         // Validating credentials
         $credentials = $request->validate([
             'name' => ['required'],

@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('name');
             $table->string('spotify');
             $table->string('apple');
-            $table->string('photo')->nullable();
             $table->timestamps();
         });
     }

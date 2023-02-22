@@ -43,7 +43,7 @@ Route::middleware('auth')->group(function() {
         // Photos routes
         Route::resource('/photos', PhotoController::class)->only(['create', 'store']);
         Route::post('/photos/update', [PhotoController::class, 'update'])->name('photos.update');
-        Route::post('/photos/delete', [PhotoController::class, 'update'])->name('photos.destroy');
+        Route::post('/photos/delete', [PhotoController::class, 'destroy'])->name('photos.destroy');
         Route::get('/photos/manage', [PhotoController::class, 'manage'])->name('photos.manage');
         // Description routes
         Route::resource('/description', DescriptionController::class)->only(['store', 'update']);

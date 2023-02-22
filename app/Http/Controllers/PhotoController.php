@@ -92,36 +92,26 @@ class PhotoController extends Controller
             'featured' => 'nullable',
         ]);
 
-        // Defining entries
+        // Defining entries - key = id of photo selected on page, value = 1 or 0
         $entries = $data['featured'];
-        // Defining arrays that will store indexes
-        $selectedIds = [];
-        $notSelectedIds = [];
 
-        // Sorting incoming data based on value from HTML. 1 -> checked, 0 -> not checked
-        foreach ($entries as $id => $value) {
-            if ($value == 1) {
-                array_push($selectedIds, $id);
-            } else {
-                array_push($notSelectedIds, $id);
-            }
-        }
+        // Extracting ids and defining models
+        $ids = array_keys($data['featured']);
+        $photos =  Photo::whereIn('id', $ids)->get();
 
-        // Getting models that shall be updated
-        $photos = Photo::whereIn('id', $selectedIds)->get();
-        $removeFeaturedPhotos = Photo::whereIn('id', $notSelectedIds)->get();
 
-        // Updating models
         foreach ($photos as $photo) {
-            $photo->update([
-                'featured' => true,
-            ]);
-        }
-
-        foreach ($removeFeaturedPhotos as $photo) {
-            $photo->update([
-                'featured' => false,
-            ]);
+            // If photo was selected as featured - it updates to true
+            if ($entries[$photo->id] == 1) {
+                $photo->update([
+                    'featured' => true,
+                ]);
+            // Else, to false
+            } else {
+                $photo->update([
+                    'featured' => false,
+                ]);
+            }
         }
 
         // Redirecting back
@@ -136,14 +126,22 @@ class PhotoController extends Controller
      */
     public function destroy(Request $request)
     {
-        dd($request);
 
+        $data = $request->validate([
+            'delete' => 'nullable',
+        ]);
 
-        // if (Storage::disk('public')->exists($photo->url)) {
-        //     Storage::disk('public')->delete($photo->url);
-        // }
+        $ids = array_keys($data['delete']);
+
+        $photos = Photo::whereIn('id', $ids)->get();
+
+        foreach ($photos as $photo) {
+            if (Storage::disk('public')->exists($photo->url)) {
+                Storage::disk('public')->delete($photo->url);
+            }
+            $photo->delete();
+        }
         // // Delete and redirect
-        // $photo->delete();
         return back()->with('message', 'Photo deleted');
     }
 

@@ -60,8 +60,21 @@
         </x-section>
         <hr>
 
-        {{-- Section for updating description --}}
-        @if ($description)
+        {{-- Section for setting and updating description --}}
+        @if ($description == null)
+        <x-section class="dashboard-section">
+            <button class="collaplse-btn"> Show description </button>
+            <div class="dashboard-list">
+                <form method="POST" class="description-form" action="{{route('description.store', $description)}}">
+                    @csrf
+
+                    <textarea name="text" id="" cols="30" rows="10"></textarea>
+                    <button type="submit">Submit text</button>
+                </form>
+            </div>
+        </x-section>
+        @else
+
         <x-section class="dashboard-section">
             <button class="collaplse-btn"> Show description </button>
 
@@ -72,17 +85,6 @@
 
                     <textarea name="text" id="" cols="30" rows="10">{{$description->text}}</textarea>
                     <button type="submit">Update text</button>
-                </form>
-            </div>
-        </x-section>
-        @else
-        <x-section class="dashboard-section">
-            <div class="dashboard-list">
-                <form method="POST" class="description-form" action="{{route('description.store', $description)}}">
-                    @csrf
-
-                    <textarea name="text" id="" cols="30" rows="10"></textarea>
-                    <button type="submit">Submit text</button>
                 </form>
             </div>
         </x-section>

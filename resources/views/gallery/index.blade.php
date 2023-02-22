@@ -9,13 +9,14 @@
     <x-section class="top-margin-section">
         <h2>Gallery so far</h2>
         <form action="" >
-            @csrf
-            <select name="gig_id" id="gallery-select" >
+            <select name="gig" id="gallery-select" >
                 <option value=""> Show all </option>
                 @foreach ($gigs as $gig)
-                <option value="{{$gig->id}}" @selected(request('gig_id') == $gig->id)> 
+                @if (count($gig->photos) > 0) 
+                <option value="{{$gig->id}}" @selected(request('gig') == $gig->id)> 
                     {{$gig->venue}} - {{Carbon\Carbon::parse($gig->date)->format('d.m.Y')}}
                 </option>
+                @endif
                 @endforeach
             </select>
         </form>

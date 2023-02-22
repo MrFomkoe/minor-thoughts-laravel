@@ -17,9 +17,12 @@ class PhotoController extends Controller
      */
     public function index()
     {
+        $filter = request(['gig']);
         return view('gallery.index', [
-            'photos' => Photo::filter(request(['gig_id']))->latest()->simplePaginate(20),
+            // Filtering photos by selected gig
+            'photos' => Photo::filter($filter)->latest()->simplePaginate(10),
             'gigs' => Gig::all(),
+            'filter' => $filter,
         ]);
     }
 
@@ -138,8 +141,7 @@ class PhotoController extends Controller
 
         return view('dashboard.photos', [
             // Filtering photos by selected gig
-            
-            'photos' => Photo::filter($filter)->latest()->simplePaginate(5),
+            'photos' => Photo::filter($filter)->latest()->simplePaginate(10),
             'gigs' => Gig::all(),
             'filter' => $filter,
         ]);

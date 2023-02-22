@@ -8,8 +8,8 @@
     <form action="">
         <label for=""> Choose gig </label>
         <select name="gig" id="">
-            <option value="" @selected(request('gig') == '')> Show all </option>
-            <option value="no-gig" @selected(request('gig') == 'no-gig')> Without gigs </option>
+            <option value="" @selected(request('gig')=='' )> Show all </option>
+            <option value="no-gig" @selected(request('gig')=='no-gig' )> Without gigs </option>
             @foreach ($gigs as $gig)
             @if ($gig->upcoming == false)
             <option value="{{$gig->id}}" @selected(request('gig')==$gig->id)
@@ -22,9 +22,8 @@
 
     <div class="photo-container">
         @foreach ($photos as $photo)
-        <x-dashboard.photo-item :photo='$photo'>
-            </x-photo>
-            @endforeach
+        <x-dashboard.photo-item :photo='$photo' />
+        @endforeach
     </div>
 
     <div class="pagination-links">

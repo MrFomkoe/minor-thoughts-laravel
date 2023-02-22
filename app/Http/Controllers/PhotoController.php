@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Gig;
 use App\Models\Photo;
-use Spatie\Backtrace\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -77,56 +76,74 @@ class PhotoController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Photo  $photo
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Photo $photo)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
+     * Mass update specified resources in database
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Photo  $photo
      * @return \Illuminate\Http\Response
+     * 
+     * 
+     * This is not the most graceful way to mass update data but couldn't come up with a better idea
      */
-    public function update(Request $request, Photo $photo)
+    public function update(Request $request)
     {
-        // Salidating input
+
+        // Validating input
         $data = $request->validate([
             'featured' => 'nullable',
         ]);
 
-        // Setting "featured" field
-        if (!isset($data['featured'])) {
-            $data['featured'] = false;
-        } else {
-            $data['featured'] = true;
+        // Defining entries
+        $entries = $data['featured'];
+        // Defining arrays that will store indexes
+        $selectedIds = [];
+        $notSelectedIds = [];
+
+        // Sorting incoming data based on value from HTML. 1 -> checked, 0 -> not checked
+        foreach ($entries as $id => $value) {
+            if ($value == 1) {
+                array_push($selectedIds, $id);
+            } else {
+                array_push($notSelectedIds, $id);
+            }
         }
 
-        // Update and redirect
-        $photo->update($data);
+        // Getting models that shall be updated
+        $photos = Photo::whereIn('id', $selectedIds)->get();
+        $removeFeaturedPhotos = Photo::whereIn('id', $notSelectedIds)->get();
+
+        // Updating models
+        foreach ($photos as $photo) {
+            $photo->update([
+                'featured' => true,
+            ]);
+        }
+
+        foreach ($removeFeaturedPhotos as $photo) {
+            $photo->update([
+                'featured' => false,
+            ]);
+        }
+
+        // Redirecting back
         return back()->with('message', 'Photo Updated');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Mass remove resources from storage.
      *
-     * @param  \App\Models\Photo  $photo
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Photo $photo)
+    public function destroy(Request $request)
     {
+        dd($request);
 
-        if (Storage::disk('public')->exists($photo->url)) {
-            Storage::disk('public')->delete($photo->url);
-        }
-        // Delete and redirect
-        $photo->delete();
+
+        // if (Storage::disk('public')->exists($photo->url)) {
+        //     Storage::disk('public')->delete($photo->url);
+        // }
+        // // Delete and redirect
+        // $photo->delete();
         return back()->with('message', 'Photo deleted');
     }
 

@@ -1,5 +1,6 @@
 @extends('dashboard.dashboard-layout')
 @section('dashboard')
+
 <x-section>
     <h1>Manage photos</h1>
     <a class="page-link" href="{{route('dashboard')}}"> BACK </a>
@@ -20,11 +21,32 @@
         <button type="submit"> Filter by gig</button>
     </form>
 
-    <div class="photo-container">
-        @foreach ($photos as $photo)
-        <x-dashboard.photo-item :photo='$photo' />
-        @endforeach
-    </div>
+    <form class="photo-form" method="POST">
+        @csrf
+        @method('POST')
+        <div class="photo-form-controls">
+            <button type="submit" class="dashboard-form-btn" formaction={{route('photos.update')}}>&#xe807;</button>
+            <button type="submit" class="dashboard-form-btn" formaction={{route('photos.destroy')}}>&#xe804;</button>
+            
+        </div>
+        
+        <div class="photo-container">
+            @foreach ($photos as $photo)
+            <div class="dashboard-photo">
+                <img src="{{asset('/storage/' . $photo->url)}}" alt="">
+                
+                <div class="photo-controls">
+                    <label> Featured photo</label>
+                    <input type="hidden" name="featured[{{$photo->id}}]" value="0">
+                    <input type="checkbox" name="featured[{{$photo->id}}]" value="1" @checked($photo->featured)>
+
+                    <label> Delete photo </label>
+                    <input type="checkbox" name="delete[{{$photo->id}}]">
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </form>
 
     <div class="pagination-links">
         {{$photos->appends($filter)->links()}}
@@ -32,3 +54,21 @@
 </x-section>
 
 @endsection
+
+{{-- <div class="photo-controls">
+    <form action="{{route('photos.update', $photo)}}" method="POST">
+        @csrf
+        @method('PATCH')
+
+        <label for=""> Featured photo</label>
+        <input type="checkbox" name="featured" @checked($photo->featured) >
+
+        <button>&#xe807;</button>
+    </form>
+    <form action="{{route('photos.destroy', $photo)}}" method="POST">
+        @csrf
+        @method('DELETE')
+
+        <button>&#xe804;</button>
+    </form>
+</div> --}}

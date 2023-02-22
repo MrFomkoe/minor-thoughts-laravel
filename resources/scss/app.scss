@@ -101,7 +101,7 @@ a:visited {
 
     &:hover {
         color: $background;
-        background-color: $text
+        background-color: $text;
     }
 }
 
@@ -153,7 +153,6 @@ header {
             margin: 0;
             padding: 0;
         }
-
 
         li {
             @include flex(center);
@@ -358,7 +357,6 @@ header {
                 @include slide;
                 opacity: 0;
 
-
                 &.prev-slide {
                     transform: translateX(-250px);
                     z-index: 8;
@@ -395,7 +393,8 @@ header {
 
 // Homepage gigs section
 
-.gigs, .album {
+.gigs,
+.album {
     table {
         margin: 0 auto;
         border: none;
@@ -412,7 +411,6 @@ header {
 
     th,
     td {
-
         text-align: center;
         padding: 1rem 2rem;
     }
@@ -428,7 +426,7 @@ header {
     }
 
     .albums-link {
-        font-family: 'icons';
+        font-family: "icons";
     }
 }
 
@@ -440,7 +438,6 @@ header {
     width: 100%;
     gap: 2rem;
 
-
     .slide {
         @include slide();
         width: 200px;
@@ -449,7 +446,7 @@ header {
     }
 }
 
-// Settings for gallery 
+// Settings for gallery
 
 .photo-list {
     margin: 0 auto;
@@ -469,7 +466,6 @@ header {
             object-fit: contain;
         }
     }
-
 }
 
 #gallery-select {
@@ -553,7 +549,6 @@ header {
             @include flex(space-between);
             flex-direction: column;
             gap: 0.5rem;
-           
         }
     }
 
@@ -583,7 +578,6 @@ header {
             @include vertical-center();
             height: 100%;
             gap: 1rem;
-            
 
             .dashboard-input {
                 display: flex;
@@ -623,8 +617,23 @@ header {
         flex-direction: column;
     }
 
+    .photo-form {
+        .photo-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .photo-form-controls {
+            margin: 0 auto;
+            display: flex;
+            flex-direction: row;
+            gap: 1rem;
+        }
+    }
+
     .photo-container {
-        margin: 0 auto;
+        margin: 0 auto 2rem;
         width: 100%;
         @include flex(center);
         row-gap: 1rem;
@@ -632,20 +641,24 @@ header {
         flex-wrap: wrap;
 
         .dashboard-photo {
-            .photo-controls {
-                margin: 1rem auto;
-                display: flex;
-                gap: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            // .photo-controls {
+            //     margin: 1rem auto;
+            //     display: flex;
+            //     flex-direction: column;
+            //     gap: 0.5rem;
 
-                button {
-                    font-family: "icons";
-                    font-size: 1rem;
+            //     button {
+            //         font-family: "icons";
+            //         font-size: 1rem;
 
-                    &:hover {
-                        cursor: pointer;
-                    }
-                }
-            }
+            //         &:hover {
+            //             cursor: pointer;
+            //         }
+            //     }
+            // }
 
             img {
                 width: 200px;

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Gig;
 use App\Models\Photo;
 use Illuminate\Http\Request;
+use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 
 class PhotoController extends Controller
@@ -16,11 +17,13 @@ class PhotoController extends Controller
      */
     public function index()
     {
+        // Defining filter
         $filter = request(['gig']);
         return view('gallery.index', [
             // Filtering photos by selected gig
             'photos' => Photo::filter($filter)->latest()->simplePaginate(10),
             'gigs' => Gig::all(),
+            // Returning filter so it could be used in pagination
             'filter' => $filter,
         ]);
     }
@@ -51,27 +54,44 @@ class PhotoController extends Controller
             'image.*' => ['image', 'mimes:jpeg,png,jpg,gif,svg', 'max:5012']
         ]);
 
-
-
+        // Checking if gig exists
         $gig = Gig::find($request['gig_id']);
 
-        // dd($gig);
-        // dd($request->file('image'));
-
+        // Loop for all requests
         foreach ($request->file('image') as $image) {
-            $path = $image->store('photos', 'public');
+            // Hashing original name
+            $photoName = $image->hashName();
 
+            // Modifying name for cropped photo
+            $previewName = 'preview_' . $photoName;
+
+            // Creating cropped photo using Intervention package
+            $preview = Image::make($image)->resize(300, null, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+
+            // Saving original photo to server and creating paths
+            $photoPath = $image->storeAs('photos', $photoName, 'public');
+            $previewPath = 'photos/previews/' . $previewName;
+
+            // Saving cropped photo
+            Storage::put('public/' . $previewPath, $preview->encode());
+
+            // Creating database records
             if ($gig) {
                 $gig->photos()->create([
-                    'url' => $path,
+                    'url' => $photoPath,
+                    'preview_url' => $previewPath,
                 ]);
             } else {
                 Photo::create([
-                    'url' => $path,
+                    'url' => $photoPath,
+                    'preview_url' => $previewPath,
                 ]);
             }
         }
 
+        // Redirect
         return redirect(route('photos.manage'))->with('message', 'Photos uploaded');
     }
 
@@ -106,7 +126,7 @@ class PhotoController extends Controller
                 $photo->update([
                     'featured' => true,
                 ]);
-            // Else, to false
+                // Else, to false
             } else {
                 $photo->update([
                     'featured' => false,
@@ -126,22 +146,27 @@ class PhotoController extends Controller
      */
     public function destroy(Request $request)
     {
-
+        // Validating input
         $data = $request->validate([
             'delete' => 'nullable',
         ]);
 
+        // Getting ids of checked photos
         $ids = array_keys($data['delete']);
 
+        // Getting photos models
         $photos = Photo::whereIn('id', $ids)->get();
 
         foreach ($photos as $photo) {
+            // Deletion of files
             if (Storage::disk('public')->exists($photo->url)) {
                 Storage::disk('public')->delete($photo->url);
+                Storage::disk('public')->delete($photo->preview_url);
             }
+            // Deletion of database record
             $photo->delete();
         }
-        // // Delete and redirect
+        // Redirect
         return back()->with('message', 'Photo deleted');
     }
 
@@ -158,6 +183,7 @@ class PhotoController extends Controller
             // Filtering photos by selected gig
             'photos' => Photo::filter($filter)->latest()->simplePaginate(10),
             'gigs' => Gig::all(),
+            // Returning filter so it could be used in pagination
             'filter' => $filter,
         ]);
     }

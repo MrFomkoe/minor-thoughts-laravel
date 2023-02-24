@@ -1,7 +1,7 @@
 @props(['photo'])
 
 <div class="dashboard-photo">
-    <img src="{{asset('/storage/' . $photo->url)}}" alt="">
+    <img src="{{asset('/storage/' . $photo->preview_url)}}" alt="">
 
     <div class="photo-controls">
         <form action="{{route('photos.update', $photo)}}" method="POST">

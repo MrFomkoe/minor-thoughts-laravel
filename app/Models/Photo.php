@@ -11,6 +11,7 @@ class Photo extends Model
 
     protected $fillable = [
         'url',
+        'preview_url',
         'featured',
         'photoable_type'
     ];

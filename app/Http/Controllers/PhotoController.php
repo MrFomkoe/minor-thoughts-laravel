@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Gig;
 use App\Models\Photo;
 use Illuminate\Http\Request;
-use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 
 class PhotoController extends Controller
@@ -57,7 +56,7 @@ class PhotoController extends Controller
         // Checking if gig exists
         $gig = Gig::find($request['gig_id']);
 
-        // Loop for all requests
+        // Loop through all requests
         foreach ($request->file('photo') as $photo) {
             // Using helper function to get paths. 
             // * 2nd parameter is additional path

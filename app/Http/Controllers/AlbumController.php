@@ -58,7 +58,7 @@ class AlbumController extends Controller
             // * 2nd parameter is additional path
             // * 3rd and 4th parameteres are width and height of cropped photo
             // * default values are 300px and 300px
-            $paths = Photo::cropStorePhotos($photo);
+            $paths = Photo::cropStorePhotos($photo, 'albums/');
             // Creating new instance of Photo and saving to database
             $album->photo()->create([
                 'url' => $paths->photoPath,
@@ -102,31 +102,33 @@ class AlbumController extends Controller
             'name' => ['required'],
             'spotify' => ['required'],
             'apple' => ['required'],
+            'photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:5120'],
         ]);
 
         // Updating and redirecting back
         $album->update($formFields);
 
         // Checking if new photo was uploaded 
-        if ($request->file('photo')) {
-            // Validating photo
-            request()->validate([
-                'photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:5120'],
-            ]);
-
+        if (isset($formFields['photo'])) {
+            $photo = $formFields['photo'];
             // Check if photo was already assigned to song and rewrite photo
             if ($album->photo) {
                 if (Storage::disk('public')->exists($album->photo->url)) {
                     Storage::disk('public')->delete($album->photo->url);
+                    Storage::disk('public')->delete($album->photo->preview_url);
                 }
+                $paths = Photo::cropStorePhotos($photo, 'albums/');
                 $album->photo()->update([
-                    'url' => $request->file('photo')->store('photos/albums', 'public'),
+                    'url' => $paths->photoPath,
+                    'preview_url' => $paths->previewPath,
                 ]);
             }
             // If song didn't have photo assigned to it, create new Photo instance
             else {
+                $paths = Photo::cropStorePhotos($photo);
                 $album->photo()->create([
-                    'url' => $request->file('photo')->store('photos/albums', 'public'),
+                    'url' => $paths->photoPath,
+                    'preview_url' => $paths->previewPath,
                 ]);
             }
         }
@@ -146,6 +148,7 @@ class AlbumController extends Controller
         if (isset($album->photo)) {
             if (Storage::disk('public')->exists($album->photo->url)) {
                 Storage::disk('public')->delete($album->photo->url);
+                Storage::disk('public')->delete($album->photo->preview_url);
             }
         }
         // Deleting related photo from database

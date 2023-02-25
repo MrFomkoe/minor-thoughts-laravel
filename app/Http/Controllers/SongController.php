@@ -95,7 +95,7 @@ class SongController extends Controller
                 // * 2nd parameter is additional path
                 // * 3rd and 4th parameteres are width and height of cropped photo
                 // * default values are 300px and 300px
-                $paths = Photo::cropStorePhotos($photo);
+                $paths = Photo::cropStorePhotos($photo, 'songs/');
 
                 // Saving photo to database
                 $song->photo()->create([
@@ -135,6 +135,7 @@ class SongController extends Controller
             'apple' => ['required'],
             'album_id' => ['nullable'],
             'featured' => ['nullable'],
+            'photo' => ['nullable'],
         ]);
 
         // Checking if "featured" is set
@@ -148,25 +149,28 @@ class SongController extends Controller
         $song->update($formFields);
 
         // Checking if new photo was uploaded 
-        if ($request->file('photo')) {
-            // Validating photo
-            request()->validate([
-                'photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:5120'],
-            ]);
+        if (isset($formFields['photo'])) {
+            $photo = $formFields['photo'];
 
-            // Check if photo was already assigned to song and rewrite photo
+            // Check if photo was already assigned to song
+            // If yes, delete old file, save new file and amend database entry
             if ($song->photo) {
                 if (Storage::disk('public')->exists($song->photo->url)) {
                     Storage::disk('public')->delete($song->photo->url);
+                    Storage::disk('public')->delete($song->photo->preview_url);
                 }
+                $paths = Photo::cropStorePhotos($photo, 'songs/');
                 $song->photo()->update([
-                    'url' => $request->file('photo')->store('photos/songs', 'public'),
+                    'url' => $paths->photoPath,
+                    'preview_url' => $paths->previewPath,
                 ]);
             }
-            // If song didn't have photo assigned to it, create new Photo instance
+            // If song didn't have photo assigned to it, save to storage and create database entry
             else {
+                $paths = Photo::cropStorePhotos($photo);
                 $song->photo()->create([
-                    'url' => $request->file('photo')->store('photos/songs', 'public'),
+                    'url' => $paths->photoPath,
+                    'preview_url' => $paths->previewPath,
                 ]);
             }
         }
@@ -187,6 +191,7 @@ class SongController extends Controller
         if (isset($song->photo)) {
             if (Storage::disk('public')->exists($song->photo->url)) {
                 Storage::disk('public')->delete($song->photo->url);
+                Storage::disk('public')->delete($song->photo->preview_url);
             }
         }
         // Deleting related photo from database

@@ -59,7 +59,7 @@ class Photo extends Model
         });
 
         // Saving original photo to server and creating paths
-        $photoPath = $photo->storeAs('photos' . $path , $photoName, 'public');
+        $photoPath = $photo->storeAs('photos/' . $path , $photoName, 'public');
         $previewPath = 'photos/' . $path . 'previews/' . $previewName;
 
         // Saving cropped photo

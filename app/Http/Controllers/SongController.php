@@ -60,12 +60,8 @@ class SongController extends Controller
             'photo.*' => ['image', 'mimes:jpeg,png,jpg,gif,svg', 'max:5120'],
         ]);
 
-        // Creating array to store each song at its own index
-        $records = [];
         // Getting the number of songs uploaded simultaniously
         $rowCount = count($formFields['name']);
-
-
 
         // // Loop to iterate through data from request
         for ($i = 0; $i < $rowCount; $i++) {
@@ -94,9 +90,17 @@ class SongController extends Controller
 
             // Check if photo was added, if yes, create instance of Photo and save to database
             if (isset($formFields['photo'][$i])) {
-                $url = $formFields['photo'][$i]->store('photos/songs', 'public');
+                $photo = $formFields['photo'][$i];
+                // Using helper function to get paths. 
+                // * 2nd parameter is additional path
+                // * 3rd and 4th parameteres are width and height of cropped photo
+                // * default values are 300px and 300px
+                $paths = Photo::cropStorePhotos($photo);
+
+                // Saving photo to database
                 $song->photo()->create([
-                    'url' => $url,
+                    'url' => $paths->photoPath,
+                    'preview_url' => $paths->previewPath,
                 ]);
             }
         }

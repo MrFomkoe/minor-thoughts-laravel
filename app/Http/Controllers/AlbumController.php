@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Album;
+use App\Models\Photo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
@@ -44,21 +45,24 @@ class AlbumController extends Controller
             'name' => ['required'],
             'spotify' => ['required'],
             'apple' => ['required'],
+            'photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:5120'],
         ]);
 
         // Creating new instance of album
         $album = Album::create($formFields);
 
         // Checking if photo was uploaded
-        if ($request->file('photo')) {
-            // Validating photo
-            request()->validate([
-                'photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:5120'],
-            ]);
-
+        if (isset($formFields['photo'])) {
+            $photo = $formFields['photo'];
+            // Using helper function to get paths. 
+            // * 2nd parameter is additional path
+            // * 3rd and 4th parameteres are width and height of cropped photo
+            // * default values are 300px and 300px
+            $paths = Photo::cropStorePhotos($photo);
             // Creating new instance of Photo and saving to database
             $album->photo()->create([
-                'url' => $request->file('photo')->store('photos/albums', 'public'),
+                'url' => $paths->photoPath,
+                'preview_url' => $paths->previewPath,
             ]);
         }
 
@@ -114,7 +118,6 @@ class AlbumController extends Controller
             if ($album->photo) {
                 if (Storage::disk('public')->exists($album->photo->url)) {
                     Storage::disk('public')->delete($album->photo->url);
-                    
                 }
                 $album->photo()->update([
                     'url' => $request->file('photo')->store('photos/albums', 'public'),

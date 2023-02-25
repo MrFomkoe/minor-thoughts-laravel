@@ -45,7 +45,7 @@ class Photo extends Model
         }
     }
 
-    static public function cropStorePhotos($photo, $width = 300, $height = 300)
+    static public function cropStorePhotos($photo, $path = '', $width = 300, $height = 300)
     {
         // Hashing original name
         $photoName = $photo->hashName();
@@ -59,8 +59,8 @@ class Photo extends Model
         });
 
         // Saving original photo to server and creating paths
-        $photoPath = $photo->storeAs('photos', $photoName, 'public');
-        $previewPath = 'photos/previews/' . $previewName;
+        $photoPath = $photo->storeAs('photos' . $path , $photoName, 'public');
+        $previewPath = 'photos/' . $path . 'previews/' . $previewName;
 
         // Saving cropped photo
         Storage::put('public/' . $previewPath, $preview->encode());

@@ -59,9 +59,11 @@ class PhotoController extends Controller
 
         // Loop for all requests
         foreach ($request->file('photo') as $photo) {
+            // Using helper function to get paths. 
+            // * 2nd parameter is additional path
+            // * 3rd and 4th parameteres are width and height of cropped photo
+            // * default values are 300px and 300px
             $paths = Photo::cropStorePhotos($photo);
-
-            // dd($paths->photoPath);
 
             // Creating database records
             if ($gig) {
@@ -77,7 +79,7 @@ class PhotoController extends Controller
             }
         }
 
-        // Redirect
+        // Redirecting
         return redirect(route('photos.manage'))->with('message', 'Photos uploaded');
     }
 

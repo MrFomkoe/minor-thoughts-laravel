@@ -11,11 +11,13 @@
             <button class="slider-btn next-btn"><i class="fa-solid fa-chevron-right"></i></button>
         </div>
         @endif
-
-        <div class="slides">
-            @foreach ($list as $unit)
-            <x-image-slide :unit='$unit' />
-            @endforeach
+        
+        <div class="slides-container">
+            <div class="slides">
+                @foreach ($list as $unit)
+                <x-image-slide :unit='$unit' />
+                @endforeach
+            </div>
         </div>
     @endunless
 </div>

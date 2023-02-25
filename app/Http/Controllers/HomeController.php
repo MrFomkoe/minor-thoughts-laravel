@@ -27,7 +27,7 @@ class HomeController extends Controller
         $albums = Album::all();
         $songs = Song::where('featured', true)->get();
         $gigs = Gig::where('upcoming', true)->orderBy('date', 'asc')->get();
-        $photos = Photo::where('featured', true)->get();;
+        $photos = Photo::where('featured', true)->take(10)->get();;
 
         return view('home.index', [
             'description' => $desciption,

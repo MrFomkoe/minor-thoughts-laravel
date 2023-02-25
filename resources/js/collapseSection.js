@@ -11,17 +11,3 @@ function collapseSection(e) {
     list.classList.toggle("collapsed");
 }
 
-
-const navCollapseSection = document.getElementById('navigation-collapse-section');
-const navCollapseLinks = document.getElementById('navigation-collapse-links');
-
-navCollapseSection.addEventListener('mouseenter', collapseNav);
-navCollapseSection.addEventListener('mouseleave', uncollapseNav);
-
-function collapseNav() {
-    navCollapseLinks.classList.add('collapsed')
-}
-
-function uncollapseNav() {
-    navCollapseLinks.classList.remove('collapsed')
-}

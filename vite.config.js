@@ -12,6 +12,7 @@ export default defineConfig({
                 "resources/js/addSongForm.js",
                 "resources/js/collapseSection.js",
                 "resources/js/filterPhotos.js",
+                "resources/js/collapleMobileNav.js",
             ],
             refresh: true,
         }),

@@ -9,7 +9,7 @@
         <h2>{{$album->name}}</h1>
     </x-section>
     <x-section class="album">
-        <img class="album-photo" src="{{asset('storage/' . $album->photo)}}" alt="">
+        <img class="album-photo" src="{{asset('storage/' . $album->photo->url)}}" alt="">
 
         <h3>Song list</h2>
             <table>

@@ -28,7 +28,7 @@
 
                 <div class="dashboard-input">
                     <label>Choose Images</label>
-                    <input type="file" name="image[]" multiple>
+                    <input type="file" name="photo[]" multiple>
                 </div>
                 </div>
 

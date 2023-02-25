@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Intervention\Image\Facades\Image;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Photo extends Model
 {
@@ -41,5 +43,33 @@ class Photo extends Model
                 ['photoable_type', 'App\Models\Gig']
             ]);
         }
+    }
+
+    static public function cropStorePhotos($photo, $width = 300, $height = 300)
+    {
+        // Hashing original name
+        $photoName = $photo->hashName();
+
+        // Modifying name for cropped photo
+        $previewName = 'preview_' . $photoName;
+
+        // Creating cropped photo using Intervention package
+        $preview = Image::make($photo)->resize(300, null, function ($constraint) {
+            $constraint->aspectRatio();
+        });
+
+        // Saving original photo to server and creating paths
+        $photoPath = $photo->storeAs('photos', $photoName, 'public');
+        $previewPath = 'photos/previews/' . $previewName;
+
+        // Saving cropped photo
+        Storage::put('public/' . $previewPath, $preview->encode());
+
+        return (object) [
+            'photoPath' => $photoPath,
+            'previewPath' => $previewPath,
+        ];
+
+        // return {$photoPath, $previewPath};
     }
 }

@@ -50,43 +50,29 @@ class PhotoController extends Controller
     {
         $request->validate([
             'gig_id' => ['nullable'],
-            'image' => ['required'],
-            'image.*' => ['image', 'mimes:jpeg,png,jpg,gif,svg', 'max:5012']
+            'photo' => ['required'],
+            'photo.*' => ['image', 'mimes:jpeg,png,jpg,gif,svg', 'max:5012']
         ]);
 
         // Checking if gig exists
         $gig = Gig::find($request['gig_id']);
 
         // Loop for all requests
-        foreach ($request->file('image') as $image) {
-            // Hashing original name
-            $photoName = $image->hashName();
+        foreach ($request->file('photo') as $photo) {
+            $paths = Photo::cropStorePhotos($photo);
 
-            // Modifying name for cropped photo
-            $previewName = 'preview_' . $photoName;
-
-            // Creating cropped photo using Intervention package
-            $preview = Image::make($image)->resize(300, null, function ($constraint) {
-                $constraint->aspectRatio();
-            });
-
-            // Saving original photo to server and creating paths
-            $photoPath = $image->storeAs('photos', $photoName, 'public');
-            $previewPath = 'photos/previews/' . $previewName;
-
-            // Saving cropped photo
-            Storage::put('public/' . $previewPath, $preview->encode());
+            // dd($paths->photoPath);
 
             // Creating database records
             if ($gig) {
                 $gig->photos()->create([
-                    'url' => $photoPath,
-                    'preview_url' => $previewPath,
+                    'url' => $paths->photoPath,
+                    'preview_url' => $paths->previewPath,
                 ]);
             } else {
                 Photo::create([
-                    'url' => $photoPath,
-                    'preview_url' => $previewPath,
+                    'url' => $paths->photoPath,
+                    'preview_url' => $paths->previewPath,
                 ]);
             }
         }
